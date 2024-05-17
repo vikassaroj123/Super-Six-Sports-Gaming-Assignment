@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Upload Viewer</title>
+    <link rel="stylesheet" type="text/css" href="../css/file_viewer.css">
+    <link rel="stylesheet" type="text/css" href="../css/header.css">
+    <style>
+        /* Add this CSS for pagination */
+        .pagination {
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .pagination button {
+            padding: 8px 16px;
+            margin: 5px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        .pagination button:hover {
+            background-color: #1f6696;
+        }
+
+        #currentPage {
+            margin: 0 10px;
+        }
+
+        /* Add this CSS for loader */
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid #3498db;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 2s linear infinite;
+            position: fixed;
+            top: 48%;
+            left: 48%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- header -->
+    <div class="nav-bar" style="position: fixed;">
+        <a href="/" class="back-icon">
+        </a>
+        <div class="title">
+            CSV Upload
+        </div>
+        <div class="sub-title">
+            Viewer
+        </div>
+        <div class="file-name">
+            <%= fileName %>
+        </div>
+    </div>
+
+    <!-- search bar -->
+    <div class="search-bar">
+        <form id="searchForm">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search data...">
+                <button id="go" class="search-btn" type="button">Go</button>
+            </div>
+        </form>
+        <div>
+            <p id="total-rows">Total Rows: <%=length%>
+            </p>
+        </div>
+    </div>
+
+    <!-- Loader -->
+    <div class="loader" id="loader"></div>
+
+    <!-- search results -->
+    <div class="result-aria" id="resultArea" style="display: none;">
+        <table>
+            <thead>
+                <tr>
+                    <% for(let h of head) { %>
+                        <th>
+                            <%= h %>
+                        </th>
+                        <% } %>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Rows will be dynamically added here -->
+                <% for(let row of data) { %>
+                    <tr>
+                        <% for(let key of Object.keys(row)) { %>
+                            <td>
+                                <%= row[key] %>
+                            </td>
+                            <% } %>
+                    </tr>
+                    <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- pagination controls -->
+    <div class="pagination" id="pagination" style="display: none;">
+        <button id="prevPageBtn"><i class="fas fa-chevron-left"></i> Previous</button>
+        <span id="currentPage"></span>
+        <button id="nextPageBtn">Next <i class="fas fa-chevron-right"></i></button>
+    </div>
+
+
+    <script>
+        // JavaScript code for pagination
+        let currentPage = 1;
+        const rowsPerPage = 5;
+        function displayRows() {
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+            const rows = document.querySelectorAll('.result-aria table tbody tr');
+            rows.forEach((row, index) => {
+                if (index >= startIndex && index < endIndex) {
+                    row.style.display = 'table-row';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            document.getElementById('currentPage').textContent = `Page ${currentPage}`;
+        }
+        document.getElementById('prevPageBtn').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                displayRows();
+            }
+        });
+
+        document.getElementById('nextPageBtn').addEventListener('click', () => {
+            const totalRows = document.querySelectorAll('.result-aria table tbody tr').length;
+            const totalPages = Math.ceil(totalRows / rowsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                displayRows();
+            }
+        });
+
+        // Simulate data upload
+        function simulateDataUpload() {
+            const loader = document.getElementById('loader');
+            const resultArea = document.getElementById('resultArea');
+            const pagination = document.getElementById('pagination');
+
+            loader.style.display = 'block';
+
+            setTimeout(() => {
+                loader.style.display = 'none';
+                resultArea.style.display = 'block';
+                pagination.style.display = 'block';
+                displayRows();
+            }, 2000);
+        }
+
+        simulateDataUpload(); 
+    </script>
+
+</body>
+
+</html>
