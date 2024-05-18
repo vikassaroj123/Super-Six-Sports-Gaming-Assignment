@@ -36,7 +36,7 @@ module.exports.view = async function(req, res) {
         // console.log(csvFile);
         const results = [];
         const header =[];
-        fs.createReadStream(csvFile.filePath) //seeting up the path for file upload
+        fs.createReadStream(csvFile.filePath) 
         .pipe(csvParser())
         .on('headers', (headers) => {
             headers.map((head) => {

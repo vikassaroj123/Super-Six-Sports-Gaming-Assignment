@@ -37,7 +37,7 @@
         /* Add this CSS for loader */
         .loader {
             border: 16px solid #f3f3f3;
-            border-top: 16px solid #3498db;
+            border-top: 16px solid #4b88fd;
             border-radius: 50%;
             width: 80px;
             height: 80px;
@@ -58,14 +58,57 @@
             }
         }
 
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
+        /* Add this CSS for the subscription pricing calculator */
+        .pricing-calculator {
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            background-color: #f9f9f9;
+        }
 
-            100% {
-                transform: rotate(360deg);
-            }
+        .pricing-calculator h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .pricing-calculator form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pricing-calculator label {
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .pricing-calculator input {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .pricing-calculator button {
+            padding: 10px;
+            background-color: #4b88fd;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .pricing-calculator button:hover {
+            background-color: #3a6dd8;
+        }
+
+        #subscriptionPrice {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
         }
     </style>
 </head>
@@ -77,13 +120,10 @@
         <a href="/" class="back-icon">
         </a>
         <div class="title">
-            CSV Upload
+            CSV Uploader
         </div>
         <div class="sub-title">
             Viewer
-        </div>
-        <div class="file-name">
-            <%= fileName %>
         </div>
     </div>
 
@@ -138,6 +178,20 @@
         <button id="nextPageBtn">Next <i class="fas fa-chevron-right"></i></button>
     </div>
 
+    <div class="pricing-calculator">
+        <h3>Subscription Pricing Calculator</h3>
+        <form id="pricingForm">
+            <label for="basePrice">Base Price:</label>
+            <input type="number" id="basePrice" name="basePrice" step="0.01" required><br>
+            <label for="pricePerCreditLine">Price per Credit Line:</label>
+            <input type="number" id="pricePerCreditLine" name="pricePerCreditLine" step="0.01" required><br>
+            <label for="pricePerCreditScorePoint">Price per Credit Score Point:</label>
+            <input type="number" id="pricePerCreditScorePoint" name="pricePerCreditScorePoint" step="0.01" required><br>
+            <button type="button" id="calculatePrice">Calculate Price</button>
+        </form>
+        <div id="subscriptionPrice"></div>
+    </div>
+
 
     <script>
         // JavaScript code for pagination
@@ -177,6 +231,7 @@
             const loader = document.getElementById('loader');
             const resultArea = document.getElementById('resultArea');
             const pagination = document.getElementById('pagination');
+            const pricingCalculator = document.querySelector('.pricing-calculator');
 
             loader.style.display = 'block';
 
@@ -184,11 +239,29 @@
                 loader.style.display = 'none';
                 resultArea.style.display = 'block';
                 pagination.style.display = 'block';
+                pricingCalculator.style.display = 'block';
                 displayRows();
             }, 2000);
         }
 
-        simulateDataUpload(); 
+        simulateDataUpload();
+
+        // JavaScript code for subscription pricing calculation
+        document.getElementById('calculatePrice').addEventListener('click', () => {
+            const basePrice = parseFloat(document.getElementById('basePrice').value);
+            const pricePerCreditLine = parseFloat(document.getElementById('pricePerCreditLine').value);
+            const pricePerCreditScorePoint = parseFloat(document.getElementById('pricePerCreditScorePoint').value);
+
+            // Assuming you have data for credit lines and credit scores
+            const rows = document.querySelectorAll('.result-aria table tbody tr');
+            rows.forEach((row) => {
+                const creditScore = parseFloat(row.cells[0].textContent);
+                const creditLines = parseFloat(row.cells[1].textContent);
+
+                const subscriptionPrice = basePrice + (pricePerCreditLine * creditLines) + (pricePerCreditScorePoint * creditScore);
+                row.insertAdjacentHTML('beforeend', `<td>${subscriptionPrice.toFixed(2)}</td>`);
+            });
+        });
     </script>
 
 </body>

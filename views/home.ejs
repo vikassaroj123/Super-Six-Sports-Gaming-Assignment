@@ -3,14 +3,13 @@
 <!-- local css for header -->
 <link rel="stylesheet" type="text/css" href="../css/header.css">
 
-
 <!-- header -->
 <div class="nav-bar">
     <a href="" class="back-icon" style="visibility: hidden;">
         <i class="fa-solid fa-circle-arrow-left" style="color: #b8b8b8;"></i>
     </a>   
     <div class="title">
-        CSV Upload
+        CSV Uploader
     </div>
 </div>
 
@@ -57,11 +56,10 @@
                     <td><%= file.createdAt.toLocaleDateString() %></td>
                     <td><%= file.createdAt.toLocaleTimeString() %></td>
                     <td><a href="/view/<%= file.file %>" class="view-link"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
-                    <td><a href="/delete/<%= file.file %>" class="delete-link"><i class="fa-regular fa-trash-can " style="color: #f00;"></i></a></td>
+                    <td><a href="/delete/<%= file.file %>" class="delete-link"><i class="fa-regular fa-trash-can" style="color: #f00;"></i></a></td>
                 </tr>
                 <% } %>
             </tbody>
         </table>
     <% } %>
 </div>
-

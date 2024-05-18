@@ -1,0 +1,45 @@
+<!-- local css for body -->
+<link rel="stylesheet" type="text/css" href="../css/pricing_calculator.css">
+<!-- local css for header -->
+<link rel="stylesheet" type="text/css" href="../css/header.css">
+
+<!-- header -->
+<div class="nav-bar">
+    <a href="/pricing_calculator"><i class="fa-solid fa-circle-arrow-left" style="color: #b8b8b8;"></i></a>
+    <div class="title">
+        Subscription Pricing Calculator
+    </div>
+</div>
+
+<div class="pricing-calculator">
+    <h3>Subscription Pricing Calculator</h3>
+    <form id="pricingForm">
+        <label for="basePrice">Base Price:</label>
+        <input type="number" id="basePrice" name="basePrice" step="0.01" required><br>
+        <label for="pricePerCreditLine">Price per Credit Line:</label>
+        <input type="number" id="pricePerCreditLine" name="pricePerCreditLine" step="0.01" required><br>
+        <label for="pricePerCreditScorePoint">Price per Credit Score Point:</label>
+        <input type="number" id="pricePerCreditScorePoint" name="pricePerCreditScorePoint" step="0.01" required><br>
+        <button type="button" id="calculatePrice">Calculate Price</button>
+    </form>
+    <div id="subscriptionPrice"></div>
+</div>
+
+<script>
+    // JavaScript code for subscription pricing calculation
+    document.getElementById('calculatePrice').addEventListener('click', () => {
+        const basePrice = parseFloat(document.getElementById('basePrice').value);
+        const pricePerCreditLine = parseFloat(document.getElementById('pricePerCreditLine').value);
+        const pricePerCreditScorePoint = parseFloat(document.getElementById('pricePerCreditScorePoint').value);
+
+        // Assuming you have data for credit lines and credit scores
+        const rows = document.querySelectorAll('.result-aria table tbody tr');
+        rows.forEach((row) => {
+            const creditScore = parseFloat(row.cells[0].textContent);
+            const creditLines = parseFloat(row.cells[1].textContent);
+
+            const subscriptionPrice = basePrice + (pricePerCreditLine * creditLines) + (pricePerCreditScorePoint * creditScore);
+            row.insertAdjacentHTML('beforeend', `<td>${subscriptionPrice.toFixed(2)}</td>`);
+        });
+    });
+</script>
